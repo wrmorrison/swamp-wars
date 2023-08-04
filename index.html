@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fly Jumper</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: url("swamp.jpg") no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    #fly {
+      position: absolute;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <img src="fly.png" alt="Fly" id="fly">
+  <script>
+    const fly = document.getElementById("fly");
+
+    function getRandomPosition() {
+      const screenWidth = window.innerWidth - fly.width;
+      const screenHeight = window.innerHeight - fly.height;
+      const randomX = Math.floor(Math.random() * screenWidth);
+      const randomY = Math.floor(Math.random() * screenHeight);
+      return { x: randomX, y: randomY };
+    }
+
+    function jumpToRandomPosition() {
+      const { x, y } = getRandomPosition();
+      fly.style.left = x + "px";
+      fly.style.top = y + "px";
+    }
+
+    fly.addEventListener("click", jumpToRandomPosition);
+  </script>
+</body>
+</html>
