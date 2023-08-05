@@ -1,17 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fly Jumper</title>
+  <title>Fly Clicker</title>
   <style>
     body {
       margin: 0;
-      overflow: hidden;
-      background: url("swamp.jpg") no-repeat center center fixed;
+      padding: 0;
+      background-image: url('swamp.jpg');
       background-size: cover;
     }
-
     #fly {
       position: absolute;
       cursor: pointer;
@@ -19,25 +16,41 @@
   </style>
 </head>
 <body>
-  <img src="fly.png" alt="Fly" id="fly">
+  <img id="fly" src="fly.png" alt="Fly">
   <script>
-    const fly = document.getElementById("fly");
+    const fly = document.getElementById('fly');
+    
+    fly.addEventListener('click', handleClick);
 
-    function getRandomPosition() {
-      const screenWidth = window.innerWidth - fly.width;
-      const screenHeight = window.innerHeight - fly.height;
-      const randomX = Math.floor(Math.random() * screenWidth);
-      const randomY = Math.floor(Math.random() * screenHeight);
-      return { x: randomX, y: randomY };
+    function handleClick() {
+      rotateImage();
+      playSound();
+      moveImage();
     }
 
-    function jumpToRandomPosition() {
-      const { x, y } = getRandomPosition();
-      fly.style.left = x + "px";
-      fly.style.top = y + "px";
+    function rotateImage() {
+      fly.style.transition = 'transform 1s';
+      fly.style.transform = 'rotate(360deg)';
+      setTimeout(() => {
+        fly.style.transition = 'none';
+        fly.style.transform = 'rotate(0deg)';
+      }, 1000);
     }
 
-    fly.addEventListener("click", jumpToRandomPosition);
+    function playSound() {
+      const audio = new Audio('pop.mp3');
+      audio.play();
+    }
+
+    function moveImage() {
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+      const randomX = Math.floor(Math.random() * (screenWidth - fly.clientWidth));
+      const randomY = Math.floor(Math.random() * (screenHeight - fly.clientHeight));
+      
+      fly.style.left = randomX + 'px';
+      fly.style.top = randomY + 'px';
+    }
   </script>
 </body>
 </html>
