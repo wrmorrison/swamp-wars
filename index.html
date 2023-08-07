@@ -4,52 +4,156 @@
   <title>Fly Clicker</title>
   <style>
     body {
-     margin: 0;
+      margin: 0;
+      padding: 0;
       overflow: hidden;
       background: url("swamp.jpg") no-repeat center center fixed;
       background-size: cover;
     }
-    #fly {
+    .fly-image {
       position: absolute;
       cursor: pointer;
+      transition: transform 0.5s, left 1s, top 1s;
+      visibility: hidden; /* Initially hide the images */
+    }
+    .scrolling-text {
+      position: absolute;
+      top: 20px;
+      left: -200px;
+      width: 100%;
+      font-family: Impact, sans-serif;
+      font-size: 12em;
+      text-transform: uppercase;
+      color: rgba(0, 0, 0, 0.2);
+      animation: scrollText 10s linear infinite;
+      /* Make the text unclickable */
+      pointer-events: none;
+    }
+    @keyframes scrollText {
+      0% { left: -1000px; }
+      100% { left: 100%; }
+    }
+    /* Custom cursor for all elements */
+    .custom-cursor {
+      cursor: url('target.png') 32 32, auto;
+    }
+    /* Bug Counter styles */
+    .bug-counter {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: rgba(0, 0, 0, 0.33);
+      color: yellow;
+      font-family: Arial, sans-serif;
+      font-size: 33px;
+      padding: 21px;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
-  <img id="fly" src="fly.png" alt="Fly">
+  <div class="scrolling-text">SWAMP WARS</div>
+  <div class="bug-counter" id="bugCounter">Bugs Squashed: 0</div>
   <script>
-    const fly = document.getElementById('fly');
-    
-    fly.addEventListener('click', handleClick);
+    const bugs = [
+      { src: 'bug1.png', sound: 'sound1.mp3' },
+      { src: 'bug2.png', sound: 'sound2.mp3' },
+      { src: 'bug3.png', sound: 'sound3.mp3' },
+      { src: 'bug4.png', sound: 'sound4.mp3' },
+      { src: 'bug5.png', sound: 'sound5.mp3' },
+      { src: 'bug6.png', sound: 'sound6.mp3' },
+    ];
 
-    function handleClick() {
-      rotateImage();
-      playSound();
-      moveImage();
+    const bugCounterElement = document.getElementById('bugCounter');
+    let bugCounter = 0;
+
+    // Function to handle image loading and display
+    function showImage(image) {
+      image.style.visibility = 'visible';
     }
 
-    function rotateImage() {
-      fly.style.transition = 'transform 1s';
-      fly.style.transform = 'rotate(360deg)';
-      setTimeout(() => {
-        fly.style.transition = 'none';
-        fly.style.transform = 'rotate(0deg)';
-      }, 1000);
+    // Function to check for overlaps
+    function checkOverlap(x, y, width, height) {
+      const images = document.querySelectorAll('.fly-image');
+      for (const image of images) {
+        if (image !== this && isOverlap(x, y, width, height, image)) {
+          return true;
+        }
+      }
+      return false;
     }
 
-    function playSound() {
-      const audio = new Audio('pop.mp3');
-      audio.play();
+    function isOverlap(x1, y1, w1, h1, element2) {
+      const x2 = parseInt(element2.style.left);
+      const y2 = parseInt(element2.style.top);
+      const w2 = element2.clientWidth;
+      const h2 = element2.clientHeight;
+      return !(x1 + w1 < x2 || x2 + w2 < x1 || y1 + h1 < y2 || y2 + h2 < y1);
     }
 
-    function moveImage() {
-      const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
-      const randomX = Math.floor(Math.random() * (screenWidth - fly.clientWidth));
-      const randomY = Math.floor(Math.random() * (screenHeight - fly.clientHeight));
-      
-      fly.style.left = randomX + 'px';
-      fly.style.top = randomY + 'px';
+    // Create and add all bug images to the page
+    bugs.forEach((bug, index) => {
+      const image = new Image();
+      image.src = bug.src;
+      image.alt = `Bug ${index + 1}`;
+      image.classList.add('fly-image', 'custom-cursor');
+
+      // Set initial random position within the visible area, avoiding overlap
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const imageWidth = image.clientWidth;
+      const imageHeight = image.clientHeight;
+      const bugOffset = 200; // Set the minimum distance from the edge (adjust as needed)
+      let randomX, randomY;
+
+      do {
+        randomX = Math.floor(Math.random() * (viewportWidth - 2 * bugOffset - imageWidth)) + bugOffset;
+        randomY = Math.floor(Math.random() * (viewportHeight - 2 * bugOffset - imageHeight)) + bugOffset;
+      } while (checkOverlap(randomX, randomY, imageWidth, imageHeight));
+
+      image.style.left = randomX + 'px';
+      image.style.top = randomY + 'px';
+
+      // Set initial random rotation
+      const randomRotation = Math.floor(Math.random() * 360);
+      image.style.transform = `rotate(${randomRotation}deg)`;
+
+      image.addEventListener('click', () => handleClick(bug));
+      image.addEventListener('load', () => showImage(image)); // Show the image after it's loaded
+      document.body.appendChild(image);
+    });
+
+    function handleClick(bug) {
+      const sound = new Audio(bug.sound);
+      sound.play();
+      moveImage(event.target);
+      bugCounter++;
+      updateCounter();
+    }
+
+    function moveImage(image) {
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const imageWidth = image.clientWidth;
+      const imageHeight = image.clientHeight;
+      const bugOffset = 50; // Set the minimum distance from the edge (adjust as needed)
+      let randomX, randomY;
+
+      do {
+        randomX = Math.floor(Math.random() * (viewportWidth - 2 * bugOffset - imageWidth)) + bugOffset;
+        randomY = Math.floor(Math.random() * (viewportHeight - 2 * bugOffset - imageHeight)) + bugOffset;
+      } while (checkOverlap(randomX, randomY, imageWidth, imageHeight));
+
+      image.style.left = randomX + 'px';
+      image.style.top = randomY + 'px';
+
+      // Set new random rotation
+      const randomRotation = Math.floor(Math.random() * 360);
+      image.style.transform = `rotate(${randomRotation}deg)`;
+    }
+
+    function updateCounter() {
+      bugCounterElement.textContent = `Bugs Squashed: ${bugCounter}`;
     }
   </script>
 </body>
