@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Fly Clicker</title>
+  <title>Swamp Wars</title>
   <style>
     body {
       margin: 0;
@@ -24,7 +24,7 @@
       font-family: Impact, sans-serif;
       font-size: 12em;
       text-transform: uppercase;
-      color: rgba(0, 0, 0, 0.2);
+      color: rgba(0, 0, 0, 0.3);
       animation: scrollText 10s linear infinite;
       /* Make the text unclickable */
       pointer-events: none;
@@ -44,16 +44,18 @@
       right: 20px;
       background-color: rgba(0, 0, 0, 0.33);
       color: yellow;
-      font-family: Arial, sans-serif;
-      font-size: 33px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 39px;
+      letter-spacing: 1px;
       padding: 21px;
       border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
   </style>
 </head>
 <body>
   <div class="scrolling-text">SWAMP WARS</div>
-  <div class="bug-counter" id="bugCounter">Bugs Squashed: 0</div>
+  <div class="bug-counter" id="bugCounter">Bug Shots: 0</div>
   <script>
     const bugs = [
       { src: 'bug1.png', sound: 'sound1.mp3' },
@@ -153,7 +155,7 @@
     }
 
     function updateCounter() {
-      bugCounterElement.textContent = `Bugs Squashed: ${bugCounter}`;
+      bugCounterElement.textContent = `Bug Shots: ${bugCounter}`;
     }
   </script>
 </body>
